@@ -165,13 +165,14 @@ class Database:
         ban_bot SMALLINT,
         date_active DATE,
         date_create DATE,
+        mes_mail INTEGER,
         PRIMARY KEY(user_id)
         )'''
         await self.pool.execute(sql)
 
     async def write_user(self, user_id: int):
-        sql = 'INSERT INTO users (user_id, ban_bot, date_active, date_create)' \
-              ' VALUES ({}, 0, CURRENT_DATE, CURRENT_DATE)'.format(user_id)
+        sql = 'INSERT INTO users (user_id, ban_bot, date_active, date_create, mes_mail)' \
+              ' VALUES ({}, 0, CURRENT_DATE, CURRENT_DATE, 0)'.format(user_id)
         await self.pool.execute(sql)
 
     async def update_user(self, user_id: int):
@@ -222,3 +223,11 @@ class Database:
     async def ban_user(self, arg: int):
         sql = 'UPDATE users SET ban_bot=1 WHERE user_id={}'.format(arg)
         await self.pool.execute(sql)
+
+    async def mail_write_mes(self, user_id: int, mes_id: int):
+        sql = f'UPDATE users SET mes_mail={mes_id} WHERE user_id={user_id}'
+        await self.pool.execute(sql)
+
+    async def select_mes_mail(self):
+        sql = 'SELECT user_id, mes_mail FROM users WHERE mes_mail>0'
+        return await self.pool.fetch(sql)

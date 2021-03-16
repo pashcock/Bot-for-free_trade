@@ -9,7 +9,7 @@ from loader import bot, dp, r, db
 from state import CreateMail, ConfMail
 from utils.func_up_mes import update_key, s_mes
 from utils.key_split import key_split_mail
-from utils.mail_process import send_mail
+from utils.mail_process import send_mail, delete_mes_mail
 from utils.rewriting import rewriting_for_stat
 
 
@@ -685,17 +685,23 @@ async def all_mail_conf(call: CallbackQuery, state: FSMContext):
         '''
     await bot.send_message(text=text, chat_id=call.message.chat.id, reply_markup=key_promotion)
     data = await db.mail_all()
+    from asyncio import sleep
     for p in data:
         print(p[0])
         try:
-            await send_mail(p[0])
+            mes_id = await send_mail(p[0])
             await r.mail_increment()
+            await db.mail_write_mes(user_id=int(p[0]), mes_id=int(mes_id))
+            await sleep(0.15)
         except Exception as e:
             await db.ban_user(p[0])
     config.save_mail = 0
     quantity = await r.mail_get()
-    text = 'Рассылка успешно завершена\n\nКоличество человек получивших пост: {}'.format(quantity)
+    text = f'Рассылка успешно завершена\n\nКоличество человек получивших пост: {quantity}\n\n' \
+           f'Сообщения удалятся через сутки'
     await bot.edit_message_text(text=text, chat_id=call.message.chat.id, message_id=call.message.message_id)
+    await sleep(86400)
+    await delete_mes_mail()
 
 
 @dp.callback_query_handler(text='confirm_mail', user_id=config.admins, state=ConfMail.Day)
@@ -714,17 +720,23 @@ async def all_mail_conf(call: CallbackQuery, state: FSMContext):
         '''
     await bot.send_message(text=text, chat_id=call.message.chat.id, reply_markup=key_promotion)
     data = await db.mail_day()
+    from asyncio import sleep
     for p in data:
         print(p[0])
         try:
-            await send_mail(p[0])
+            mes_id = await send_mail(p[0])
             await r.mail_increment()
+            await db.mail_write_mes(user_id=int(p[0]), mes_id=int(mes_id))
+            await sleep(0.15)
         except Exception as e:
             await db.ban_user(p[0])
     config.save_mail = 0
     quantity = await r.mail_get()
-    text = 'Рассылка успешно завершена\n\nКоличество человек получивших пост: {}'.format(quantity)
+    text = f'Рассылка успешно завершена\n\nКоличество человек получивших пост: {quantity}\n\n' \
+           f'Сообщения удалятся через сутки'
     await bot.edit_message_text(text=text, chat_id=call.message.chat.id, message_id=call.message.message_id)
+    await sleep(86400)
+    await delete_mes_mail()
 
 
 @dp.callback_query_handler(text='confirm_mail', user_id=config.admins, state=ConfMail.Week)
@@ -743,17 +755,23 @@ async def all_mail_conf(call: CallbackQuery, state: FSMContext):
         '''
     await bot.send_message(text=text, chat_id=call.message.chat.id, reply_markup=key_promotion)
     data = await db.mail_week()
+    from asyncio import sleep
     for p in data:
         print(p[0])
         try:
-            await send_mail(p[0])
+            mes_id = await send_mail(p[0])
             await r.mail_increment()
+            await db.mail_write_mes(user_id=int(p[0]), mes_id=int(mes_id))
+            await sleep(0.15)
         except Exception as e:
             await db.ban_user(p[0])
     config.save_mail = 0
     quantity = await r.mail_get()
-    text = 'Рассылка успешно завершена\n\nКоличество человек получивших пост: {}'.format(quantity)
+    text = f'Рассылка успешно завершена\n\nКоличество человек получивших пост: {quantity}\n\n' \
+           f'Сообщения удалятся через сутки'
     await bot.edit_message_text(text=text, chat_id=call.message.chat.id, message_id=call.message.message_id)
+    await sleep(86400)
+    await delete_mes_mail()
 
 
 @dp.callback_query_handler(text='confirm_mail', user_id=config.admins, state=ConfMail.Month)
@@ -772,14 +790,20 @@ async def all_mail_conf(call: CallbackQuery, state: FSMContext):
         '''
     await bot.send_message(text=text, chat_id=call.message.chat.id, reply_markup=key_promotion)
     data = await db.mail_month()
+    from asyncio import sleep
     for p in data:
         print(p[0])
         try:
-            await send_mail(p[0])
+            mes_id = await send_mail(p[0])
             await r.mail_increment()
+            await db.mail_write_mes(user_id=int(p[0]), mes_id=int(mes_id))
+            await sleep(0.15)
         except Exception as e:
             await db.ban_user(p[0])
     config.save_mail = 0
     quantity = await r.mail_get()
-    text = 'Рассылка успешно завершена\n\nКоличество человек получивших пост: {}'.format(quantity)
+    text = f'Рассылка успешно завершена\n\nКоличество человек получивших пост: {quantity}\n\n' \
+           f'Сообщения удалятся через сутки'
     await bot.edit_message_text(text=text, chat_id=call.message.chat.id, message_id=call.message.message_id)
+    await sleep(86400)
+    await delete_mes_mail()
