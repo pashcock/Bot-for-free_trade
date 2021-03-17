@@ -11,7 +11,7 @@ from state import CreateBlurb, CreateCaption, CreatePost, EditPost, BanPost, Cre
 from utils.rewriting import rewriting
 
 
-@dp.message_handler(commands='help', user_id=config.admins)
+@dp.message_handler(commands='help', user_id=config.new_admins)
 async def helper(message: types.Message):
     text = '''<b>Тут тебе максимальная инструкция</b>
 
@@ -30,7 +30,7 @@ async def helper(message: types.Message):
     await rewriting()
 
 
-@dp.message_handler(CommandStart(deep_link=compile(r"\w\d\w\d\w\d\w\d")), user_id=config.admins)
+@dp.message_handler(CommandStart(deep_link=compile(r"\w\d\w\d\w\d\w\d")), user_id=config.new_admins)
 async def start_mess_deeplink(message: types.Message):
     arg = message.get_args()
     text = await db.select_text(arg)
@@ -40,7 +40,7 @@ async def start_mess_deeplink(message: types.Message):
     await message.answer('{}'.format(text), parse_mode=types.ParseMode.MARKDOWN)
 
 
-@dp.message_handler(CommandStart(deep_link=None), user_id=config.admins)
+@dp.message_handler(CommandStart(deep_link=None), user_id=config.new_admins)
 async def admin_menu(message: types.Message):
     text = '''<b>Смелее, мой юный друг!</b>
     
@@ -146,7 +146,7 @@ async def admin_menu(message: types.Message, state: FSMContext):
     await rewriting()
 
 
-@dp.message_handler(CommandStart(deep_link=None), user_id=config.admins, state=CreatePost.Q1)
+@dp.message_handler(CommandStart(deep_link=None), user_id=config.new_admins, state=CreatePost.Q1)
 async def admin_menu(message: types.Message, state: FSMContext):
     await state.finish()
     text = '''<b>Смелее, мой юный друг!</b>
@@ -158,7 +158,7 @@ async def admin_menu(message: types.Message, state: FSMContext):
     await rewriting()
 
 
-@dp.message_handler(CommandStart(deep_link=None), user_id=config.admins, state=EditPost.E1)
+@dp.message_handler(CommandStart(deep_link=None), user_id=config.new_admins, state=EditPost.E1)
 async def admin_menu(message: types.Message, state: FSMContext):
     await state.finish()
     text = '''<b>Смелее, мой юный друг!</b>
@@ -170,7 +170,7 @@ async def admin_menu(message: types.Message, state: FSMContext):
     await rewriting()
 
 
-@dp.message_handler(CommandStart(deep_link=None), user_id=config.admins, state=EditPost.E2)
+@dp.message_handler(CommandStart(deep_link=None), user_id=config.new_admins, state=EditPost.E2)
 async def admin_menu(message: types.Message, state: FSMContext):
     await state.finish()
     text = '''<b>Смелее, мой юный друг!</b>
@@ -182,7 +182,7 @@ async def admin_menu(message: types.Message, state: FSMContext):
     await rewriting()
 
 
-@dp.message_handler(CommandStart(deep_link=None), user_id=config.admins, state=BanPost.B1)
+@dp.message_handler(CommandStart(deep_link=None), user_id=config.new_admins, state=BanPost.B1)
 async def admin_menu(message: types.Message, state: FSMContext):
     await state.finish()
     text = '''<b>Смелее, мой юный друг!</b>

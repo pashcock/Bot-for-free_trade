@@ -6,9 +6,10 @@ load_dotenv()
 
 BOT_TOKEN = str(os.getenv("BOT_TOKEN"))
 admins = [349368261, 459359171, 173372397]
+new_admins = [349368261, 459359171, 173372397, 512784976]
 PGUSER = os.getenv("PGUSER")
 PGPASSWORD = os.getenv("PGPASSWORD")
-ip = "192.168.99.100"
+ip = "localhost"
 
 
 additional_channel = ''

@@ -107,7 +107,7 @@ async def get_key_del(message: types.Message, state: FSMContext):
         await message.answer(text=text, reply_markup=key_return_link)
 
 
-@dp.callback_query_handler(text='create_link', user_id=config.admins)
+@dp.callback_query_handler(text='create_link', user_id=config.new_admins)
 async def call_add_link(call: CallbackQuery):
     await call.answer()
     text = '''<b>Работа со ссылками</b>
@@ -124,7 +124,7 @@ async def call_add_link(call: CallbackQuery):
                                 reply_markup=key_link)
 
 
-@dp.callback_query_handler(text='create_link', user_id=config.admins, state=CreatePost.Q1)
+@dp.callback_query_handler(text='create_link', user_id=config.new_admins, state=CreatePost.Q1)
 async def call_add_link(call: CallbackQuery, state: FSMContext):
     await state.finish()
     await call.answer()
@@ -142,7 +142,7 @@ async def call_add_link(call: CallbackQuery, state: FSMContext):
                                 reply_markup=key_link)
 
 
-@dp.callback_query_handler(text='create_link', user_id=config.admins, state=EditPost.E1)
+@dp.callback_query_handler(text='create_link', user_id=config.new_admins, state=EditPost.E1)
 async def call_add_link(call: CallbackQuery, state: FSMContext):
     await state.finish()
     await call.answer()
@@ -160,7 +160,7 @@ async def call_add_link(call: CallbackQuery, state: FSMContext):
                                 reply_markup=key_link)
 
 
-@dp.callback_query_handler(text='create_link', user_id=config.admins, state=EditPost.E2)
+@dp.callback_query_handler(text='create_link', user_id=config.new_admins, state=EditPost.E2)
 async def call_add_link(call: CallbackQuery, state: FSMContext):
     await state.finish()
     await call.answer()
@@ -178,7 +178,7 @@ async def call_add_link(call: CallbackQuery, state: FSMContext):
                                 reply_markup=key_link)
 
 
-@dp.callback_query_handler(text='create_link', user_id=config.admins, state=BanPost.B1)
+@dp.callback_query_handler(text='create_link', user_id=config.new_admins, state=BanPost.B1)
 async def call_add_link(call: CallbackQuery, state: FSMContext):
     await state.finish()
     await call.answer()
@@ -196,7 +196,7 @@ async def call_add_link(call: CallbackQuery, state: FSMContext):
                                 reply_markup=key_link)
 
 
-@dp.callback_query_handler(text='add_link', user_id=config.admins)
+@dp.callback_query_handler(text='add_link', user_id=config.new_admins)
 async def call_add_link(call: CallbackQuery):
     await call.answer()
     await CreatePost.Q1.set()
@@ -219,7 +219,7 @@ async def call_add_link(call: CallbackQuery):
                                 reply_markup=key_return_link)
 
 
-@dp.callback_query_handler(text='edit_link', user_id=config.admins)
+@dp.callback_query_handler(text='edit_link', user_id=config.new_admins)
 async def call_add_link(call: CallbackQuery):
     await call.answer()
     await EditPost.E1.set()
@@ -228,7 +228,7 @@ async def call_add_link(call: CallbackQuery):
                                 reply_markup=key_return_link)
 
 
-@dp.callback_query_handler(text='block_link', user_id=config.admins)
+@dp.callback_query_handler(text='block_link', user_id=config.new_admins)
 async def call_add_link(call: CallbackQuery):
     await call.answer()
     await BanPost.B1.set()
@@ -237,7 +237,7 @@ async def call_add_link(call: CallbackQuery):
                                 reply_markup=key_return_link)
 
 
-@dp.callback_query_handler(text='start_return', user_id=config.admins)
+@dp.callback_query_handler(text='start_return', user_id=config.new_admins)
 async def call_add_link(call: CallbackQuery):
     await call.answer()
     text = '''<b>Смелее, мой юный друг!</b>

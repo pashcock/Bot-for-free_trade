@@ -18,3 +18,8 @@ async def call_add_link(call: CallbackQuery):
     '''
     await bot.edit_message_text(text=text, chat_id=call.message.chat.id, message_id=call.message.message_id,
                                 reply_markup=key_promotion)
+
+
+@dp.callback_query_handler(text='promotion', user_id=config.new_admins)
+async def call_add_link(call: CallbackQuery):
+    await call.answer('Не твой уровень дорогой, не твой уровень', show_alert=True)
