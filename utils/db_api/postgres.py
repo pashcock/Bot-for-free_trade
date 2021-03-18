@@ -20,26 +20,29 @@ class Database:
         CREATE TABLE IF NOT EXISTS posts (
         link_post VARCHAR(12),
         text_post VARCHAR(1023),
+        photo_post VARCHAR(1023),
         col_vo INTEGER,
         PRIMARY KEY(link_post)
         )'''
         await self.pool.execute(sql)
 
-    async def write_post(self, text: str, random_text: str):
-        sql = 'INSERT INTO posts (link_post, text_post, col_vo) VALUES (\'{}\', \'{}\', 0)'.format(random_text, text)
+    async def write_post(self, text: str, random_text: str, photo: str):
+        sql = 'INSERT INTO posts (link_post, text_post, photo_post, col_vo) ' \
+              'VALUES (\'{}\', \'{}\', \'{}\', 0)'.format(random_text, text, photo)
         await self.pool.execute(sql)
 
     async def select_text(self, random_text: str):
-        sql = 'SELECT text_post FROM posts WHERE link_post=\'{}\''.format(random_text)
-        return await self.pool.fetchval(sql)
+        sql = 'SELECT text_post, photo_post FROM posts WHERE link_post=\'{}\''.format(random_text)
+        return await self.pool.fetchrow(sql)
 
-    async def update_post(self, text: str, random_text: str):
-        sql = 'UPDATE posts SET text_post=\'{}\' WHERE link_post=\'{}\''.format(text, random_text)
+    async def update_post(self, text: str, random_text: str, photo: str):
+        sql = 'UPDATE posts SET text_post=\'{}\', photo_post=\'{}\' WHERE link_post=\'{}\''.format(text,
+                                                                                                   photo, random_text)
         await self.pool.execute(sql)
 
     async def ban_post(self, random_text: str):
         text = 'Данный курс заблокирован по обращению правообладателя'
-        sql = 'UPDATE posts SET text_post=\'{}\' WHERE link_post=\'{}\''.format(text, random_text)
+        sql = 'UPDATE posts SET text_post=\'{}\', photo_post=\'\' WHERE link_post=\'{}\''.format(text, random_text)
         await self.pool.execute(sql)
 
     async def check_link(self, arg: str):

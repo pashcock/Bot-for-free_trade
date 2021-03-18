@@ -687,7 +687,6 @@ async def all_mail_conf(call: CallbackQuery, state: FSMContext):
     data = await db.mail_all()
     from asyncio import sleep
     for p in data:
-        print(p[0])
         try:
             mes_id = await send_mail(p[0])
             await r.mail_increment()
@@ -722,7 +721,6 @@ async def all_mail_conf(call: CallbackQuery, state: FSMContext):
     data = await db.mail_day()
     from asyncio import sleep
     for p in data:
-        print(p[0])
         try:
             mes_id = await send_mail(p[0])
             await r.mail_increment()
@@ -757,7 +755,6 @@ async def all_mail_conf(call: CallbackQuery, state: FSMContext):
     data = await db.mail_week()
     from asyncio import sleep
     for p in data:
-        print(p[0])
         try:
             mes_id = await send_mail(p[0])
             await r.mail_increment()
@@ -792,7 +789,6 @@ async def all_mail_conf(call: CallbackQuery, state: FSMContext):
     data = await db.mail_month()
     from asyncio import sleep
     for p in data:
-        print(p[0])
         try:
             mes_id = await send_mail(p[0])
             await r.mail_increment()

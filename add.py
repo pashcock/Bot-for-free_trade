@@ -18,7 +18,7 @@ async def on_startup(dp):
     await db.create_const_table()
     await db.create_table_user()
     try:
-        await db.write_post('Тестовый текст', '11111111')
+        await db.write_post('Тестовый текст', '11111111', '')
     except:
         pass
     try:

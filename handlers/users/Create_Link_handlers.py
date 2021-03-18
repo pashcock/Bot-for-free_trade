@@ -1,12 +1,37 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, ContentType
 
 from data import config
 from keyboards.Inline.admin_create_post import key_return_link, key_link, key_after_create_post, key_after_start
 from loader import dp, db, bot
 from state import CreatePost, EditPost, BanPost
 from utils.argument_generation import generation
+
+
+@dp.message_handler(state=CreatePost.Q1, content_types=ContentType.PHOTO)
+async def get_post_photo(message: types.Message, state: FSMContext):
+    try:
+        arg = '11111111'
+        while await db.check_link(arg=arg):
+            arg = await generation()
+        try:
+            photo = message.photo[-1].file_id
+            answer = message.caption
+            await bot.send_photo(chat_id=message.chat.id, photo=photo, caption=answer, parse_mode='Markdown',
+                                 disable_notification=True)
+            await message.answer('Вот ссылка для получения поста:'
+                                 '\nhttps://t.me/{}?start={}\n\nАктивируйте, '
+                                 'чтобы проверить'.format(config.botname, arg), disable_web_page_preview=True,
+                                 disable_notification=True)
+            await db.write_post(text=str(answer), random_text='{}'.format(arg), photo=photo)
+            await state.finish()
+            await message.answer('Сообщение подготовлено',
+                                 reply_markup=key_after_create_post)
+        except Exception as e:
+            await message.answer(f'Ошибка в понимании разметки\n\n{e}', reply_markup=key_return_link)
+    except Exception as e:
+        await message.answer(f'Перехвачена ошибка:\n\n{e}', reply_markup=key_return_link)
 
 
 @dp.message_handler(state=CreatePost.Q1)
@@ -17,12 +42,13 @@ async def get_post(message: types.Message, state: FSMContext):
         while await db.check_link(arg=arg):
             arg = await generation()
         try:
+            photo = ''
             await message.answer(text, parse_mode='Markdown', disable_web_page_preview=True, disable_notification=True)
             await message.answer('Вот ссылка для получения поста:'
-                                 '\nhttps://t.me/f_trade_bot?start={}\n\nАктивируйте, '
-                                 'чтобы проверить'.format(arg), disable_web_page_preview=True,
+                                 '\nhttps://t.me/{}?start={}\n\nАктивируйте, '
+                                 'чтобы проверить'.format(config.botname, arg), disable_web_page_preview=True,
                                  disable_notification=True)
-            await db.write_post(text=str(text), random_text='{}'.format(arg))
+            await db.write_post(text=str(text), random_text='{}'.format(arg), photo=photo)
             await state.finish()
             await message.answer('Сообщение подготовлено',
                                  reply_markup=key_after_create_post)
@@ -45,7 +71,7 @@ async def get_key(message: types.Message, state: FSMContext):
             pass
     if await db.check_link(arg):
         await state.update_data(arg=arg)
-        text = '''<b>Пришлите текст поста</b>
+        text = '''<b>Пришлите текст поста или фото с подписью</b>
 
 Рекомендуется присылать не готовый пост с канала с его форматированием, а сокращенный.
 
@@ -68,17 +94,37 @@ async def get_key(message: types.Message, state: FSMContext):
         await message.answer(text=text, reply_markup=key_return_link)
 
 
+@dp.message_handler(state=EditPost.E2, content_types=ContentType.PHOTO)
+async def get_key_post(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    arg = data.get("arg")
+    try:
+        photo = message.photo[-1].file_id
+        answer = message.caption
+        await bot.send_photo(chat_id=message.chat.id, photo=photo, caption=answer, parse_mode='Markdown',
+                             disable_notification=True)
+        await message.answer('Пост изменен\n\nАктивируйте бота по ссылке для проверки:'
+                             '\nhttps://t.me/{}?start={}'.format(config.botname, arg), disable_web_page_preview=True,
+                             disable_notification=True)
+        await db.update_post(answer, arg, photo)
+        await message.answer('Сообщение подготовлено', reply_markup=key_after_create_post)
+        await state.finish()
+    except Exception as e:
+        await message.answer(f'Ошибка в понимании разметки\n\n{e}', reply_markup=key_return_link)
+
+
 @dp.message_handler(state=EditPost.E2)
 async def get_key_post(message: types.Message, state: FSMContext):
     data = await state.get_data()
     arg = data.get("arg")
     edit_text = message.text
     try:
+        photo = ''
         await message.answer(edit_text, parse_mode='Markdown', disable_web_page_preview=True, disable_notification=True)
         await message.answer('Пост изменен\n\nАктивируйте бота по ссылке для проверки:'
-                             '\nhttps://t.me/f_trade_bot?start={}'.format(arg), disable_web_page_preview=True,
+                             '\nhttps://t.me/{}?start={}'.format(config.botname, arg), disable_web_page_preview=True,
                              disable_notification=True)
-        await db.update_post(edit_text, arg)
+        await db.update_post(edit_text, arg, photo)
         await message.answer('Сообщение подготовлено', reply_markup=key_after_create_post)
         await state.finish()
     except Exception as e:
@@ -99,7 +145,7 @@ async def get_key_del(message: types.Message, state: FSMContext):
     if await db.check_link(arg):
         await db.ban_post(arg)
         await message.answer('Пост заблокирован\n\nАктивируйте бота по ссылке для проверки:'
-                             '\nhttps://t.me/f_trade_bot?start={}'.format(arg))
+                             '\nhttps://t.me/{}?start={}'.format(config.botname, arg))
         await message.answer('Сообщение подготовлено', reply_markup=key_after_create_post)
         await state.finish()
     else:

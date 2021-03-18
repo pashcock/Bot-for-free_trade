@@ -122,6 +122,7 @@ async def delete_mes_mail():
     data = await db.select_mes_mail()
     for p in data:
         try:
+            await db.mail_write_mes(user_id=int(p[0]), mes_id=0)
             await bot.delete_message(chat_id=p[0], message_id=p[1])
             await sleep(0.2)
         except:
