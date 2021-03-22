@@ -13,7 +13,7 @@ Small admin panel:
 
 For use:
 1. Copy the repository to the server
-2. "sh docker-install.sh" command
+2. "sh docker_install.sh" command
 3. "nano .env" command
 4. "cd data" command
     "nano config.py" command
